@@ -1,9 +1,14 @@
-import React from 'react'
+import Button from "@/app/components/Button";
 
-function page() {
+function Mission() {
   return (
-    <div>This is the mission page</div>
+    <main>
+      <div>This is the mission page</div>
+      <div>
+        <Button/>
+      </div>
+    </main>
   )
 }
 
-export default page
+export default Mission
