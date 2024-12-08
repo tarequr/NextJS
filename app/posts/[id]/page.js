@@ -1,4 +1,5 @@
 import Comments from '@/app/components/Comments';
+import getAllPosts from '@/lib/getAllPosts';
 import getPost from '@/lib/getPost';
 import getPostComments from '@/lib/getPostComments';
 import { notFound } from 'next/navigation';
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-async function PostPage({ params }) {
+export default async function PostPage({ params }) {
   const { id } = params;
   const postPromise = getPost(id);
   const commentsPromise = getPostComments(id);
@@ -40,4 +41,7 @@ async function PostPage({ params }) {
   )
 }
 
-export default PostPage
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((post) => ({ id: post.id.toString() }));
+}
