@@ -1,12 +1,12 @@
+import Comments from '@/app/components/Comments';
 import getPost from '@/lib/getPost';
 import getPostComments from '@/lib/getPostComments';
 import { notFound } from 'next/navigation';
-import React from 'react'
+import React, { Suspense } from 'react'
 
 export async function generateMetadata({ params }) {
   const { id } = params;
   const post = await getPost(id);
-  const comments = await getPostComments(id);
 
   if (!post) return notFound();
 
@@ -18,13 +18,24 @@ export async function generateMetadata({ params }) {
 
 async function PostPage({ params }) {
   const { id } = params;
-  const post = await getPost(id);
+  const postPromise = getPost(id);
+  const commentsPromise = getPostComments(id);
+
+  // const [post, comments] = await Promise.all([postPromise, commentsPromise]);
+
+  const post = await postPromise;
 
   if (!post) return notFound();
   return (
     <div className='mt-6'>
       <h2 className='text-blue-500'>{post.title}</h2>
       <p className='mt-3'>{post.body}</p>
+
+      <hr />
+
+      <Suspense fallback="<h1>Loading comments...</h1>">
+        <Comments promise={commentsPromise} />
+      </Suspense>
     </div>
   )
 }
